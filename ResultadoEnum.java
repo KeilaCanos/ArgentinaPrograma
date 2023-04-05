@@ -9,6 +9,7 @@
  *
  * @author camii
  */
-public enum ResultadoEnum {
+public enum ResultadoEnum
+{
     GANADOR_EQ1, GANADOR_EQ2, EMPATE;
 }

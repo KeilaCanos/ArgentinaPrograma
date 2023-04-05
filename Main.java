@@ -8,20 +8,18 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Optional;
 
-
-/**
- *
- * @author camii
- */
 public class Main {
 
-    public static void main(String[] args) throws FileNotFoundException, IOException  {
+    public static void main(String[] args) throws FileNotFoundException, IOException
+    {
 
-    	ArrayList<Ronda> rondas = new ArrayList<>();
+    	ArrayList<Ronda> listaRondas = new ArrayList<>();
         Ronda ronda1 = new Ronda(1);
-        rondas.add(ronda1);
-        ArrayList<Pronostico> pronosticos = new ArrayList<>();
+        listaRondas.add(ronda1);
+        ArrayList<Pronostico> listaPronosticos = new ArrayList<>();
+        ArrayList<Persona> listaPersonas = new ArrayList<>();
         
     //resultados: 
 
@@ -34,40 +32,40 @@ public class Main {
         while(line != null)
         {
             String[] linea = line.split(",");
-            Equipo eq1 = new Equipo(linea[0]);
-            Equipo eq2 = new Equipo(linea[3]);
-            Partido partido = new Partido(eq1, eq2, Integer.parseInt(linea[1]), Integer.parseInt(linea[2]));
-            boolean rondaEncontrada = false;
-            for(Ronda ronda : rondas)
+            //Este if lo que hace es verificar que en el archivo no hayan mas o menos columnas de las
+            // que correspondan. Si la verificacion no esta bien, directamente no crea el partido
+            if(linea.length == 5)
             {
-                if(ronda.getIdRonda() == Integer.parseInt(linea[4]))
-                {
-                    rondaEncontrada = true;
-                    ronda.agregarPartido(partido);
-                    break;
+                Equipo eq1 = new Equipo(linea[0]);
+                Equipo eq2 = new Equipo(linea[3]);
+                int idRondaArchivo = Integer.parseInt(linea[4]);
+                try{
+                    Partido partido = new Partido(eq1, eq2, Integer.parseInt(linea[1]), Integer.parseInt(linea[2]));
+                    boolean rondaEncontrada = false;
+                    for(Ronda ronda : listaRondas)
+                    {
+                        if(ronda.getIdRonda() == idRondaArchivo)
+                        {
+                            rondaEncontrada = true;
+                            ronda.agregarPartido(partido);
+                            break;
+                        }
+                    }
+                    if(rondaEncontrada == false)
+                    {
+                        Ronda rondaNueva = new Ronda(idRondaArchivo);
+                        rondaNueva.agregarPartido(partido);
+                        listaRondas.add(rondaNueva);
+                    }
+
                 }
-            }
-            if(rondaEncontrada == false)
-            {
-                Ronda rondaNueva = new Ronda(Integer.parseInt(linea[4]));
-                rondaNueva.agregarPartido(partido);
-                rondas.add(rondaNueva);
-            }
-            /*while(i<rondas.length & rondaEncontrada == false & rondas[i] != null){
-                if(rondas[i].getIdRonda() == Integer.parseInt(linea[4])){
-                    rondaEncontrada = true;
-                    rondas[i].agregarPartido(partido);
+                catch(NumberFormatException e){
+                    System.out.println("El partido de " + eq1.getNombre() + " - " + eq2.getNombre() + " de la Ronda " +
+                     idRondaArchivo + " no pudo ser guardado correctamente");
                 }
-                i++;
+            }else {
+                System.out.println("No se pudo crear el partido");
             }
-            if(!rondaEncontrada & rondasAgregadas<rondas.length){
-                Ronda r = new Ronda(Integer.parseInt(linea[4]));
-                rondas[rondasAgregadas] = r;
-                System.out.println(rondas);
-                rondas[i].agregarPartido(partido);
-                System.out.println(rondas);
-                rondasAgregadas++;
-            }*/
             line = br.readLine();
         }
     
@@ -79,47 +77,89 @@ public class Main {
         while(line != null)
         {
             String[] linea = line.split(",");
-            ResultadoEnum resultado = null;
-            int columna=1;
-            boolean encontrado = false;
-            while(columna<=3 & encontrado == false){
-                if(linea[columna].equals("X")){
-                    encontrado = true;
-                    switch (columna) {
-                        case 1 -> resultado = ResultadoEnum.GANADOR_EQ1;
-                        case 2 -> resultado = ResultadoEnum.EMPATE;
-                        case 3 -> resultado = ResultadoEnum.GANADOR_EQ2;
-                        default -> {
+            //Este if lo que hace es verificar que en el archivo no hayan mas o menos columnas de las
+            // que correspondan. Si la verificacion no esta bien, no crea el pronostico y no
+            // se toma en cuenta para imprimir los puntos de cada persona
+            if (linea.length == 7)
+            {
+                ResultadoEnum resultadoPronostico = null;
+                int columna=1;
+                boolean encontrado = false;
+                while(columna<=3 & encontrado == false)
+                {
+                    if(linea[columna].equals("X"))
+                    {
+                        encontrado = true;
+                        switch (columna)
+                        {
+                            case 1 -> resultadoPronostico = ResultadoEnum.GANADOR_EQ1;
+                            case 2 -> resultadoPronostico = ResultadoEnum.EMPATE;
+                            case 3 -> resultadoPronostico = ResultadoEnum.GANADOR_EQ2;
+                            default -> {
+                            }
+                        }
+                    }
+                    columna++;
+                }
+
+                int idRonda = Integer.parseInt(linea[5]);
+
+                //Este for recorre todas las rondas en la lista rondas
+                //y guarda cada pronostico en la lista de pronosticos
+                for(Ronda ronda : listaRondas)
+                {
+                    if(ronda.getIdRonda() == idRonda)
+                    {
+                        //en base a los nombres de los equipos de esta linea del archivo pronosticos, devuelve
+                        // el objeto partido correspondiente a esta ronda
+                        Partido partidoEncontrado = ronda.buscarPartido(linea[0], linea[4]);
+                        if(partidoEncontrado != null & resultadoPronostico != null)
+                        {
+                            String nomParticipante = new String(linea[6]);
+                            if (listaPersonas.isEmpty()){
+                                Persona participante = new Persona(nomParticipante);
+                                listaPersonas.add(participante);
+                                Pronostico pronostico = new Pronostico(partidoEncontrado, resultadoPronostico, idRonda, participante);
+                                listaPronosticos.add(pronostico);
+                            }
+                            else {
+                                Optional<Persona> personaEncontrada = listaPersonas.stream()
+                                        .filter(persona -> persona.getNombre().equals(nomParticipante))
+                                        .findFirst();
+
+                                if (personaEncontrada.isPresent()) {
+                                    Persona per = personaEncontrada.get();
+                                    //crea un pronostico con el partido encontrado, con el resultado del pronostico
+                                    // y el id de ronda y el participante correspondiente. Y lo agrega a la lista de pronosticos
+                                    Pronostico pronostico = new Pronostico(partidoEncontrado, resultadoPronostico, idRonda, per);
+                                    listaPronosticos.add(pronostico);
+                                } else {
+                                    Persona participante = new Persona(nomParticipante);
+                                    listaPersonas.add(participante);
+                                    Pronostico pronostico = new Pronostico(partidoEncontrado, resultadoPronostico, idRonda, participante);
+                                    listaPronosticos.add(pronostico);
+                                }
+
+                            }
+
+
                         }
                     }
                 }
-                columna++;
-            }
 
-            int idRonda = Integer.parseInt(linea[5]);
-            for(Ronda ronda : rondas)
-            {
-                if(ronda.getIdRonda() == idRonda)
-                {
-                    Partido partido = ronda.buscarPartido(linea[0], linea[4]);
-                    if(partido != null & resultado != null){
-                        Pronostico pronostico = new Pronostico(partido, resultado, idRonda);
-                        pronosticos.add(pronostico);
-                    }
-                }
+            }else {
+                System.out.println("No se cargo el pronostico");
             }
-        line = br.readLine();
+            line = br.readLine();
+
         }
-        
-        
-        int puntosRonda = 0;
-        for(Ronda r : rondas)
-        {
-            if(r != null)
-            {
-                puntosRonda = r.puntosDePronosticosPorRonda(pronosticos);
-                System.out.println("puntos de la ronda " + r.getIdRonda() +": "+puntosRonda);
-            }
+
+        for(Pronostico pro : listaPronosticos){
+            pro.puntos();
         }
+        for (Persona per : listaPersonas){
+            System.out.println("Los puntos de "+ per.getNombre() +" son: "+per.getPuntos());
+        }
+
     }
 }

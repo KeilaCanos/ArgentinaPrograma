@@ -1,24 +1,36 @@
 import java.util.ArrayList;
-import java.util.List;
 
 public class Persona
 {
     private String nombre;
     private int puntos;
-    private ArrayList<Pronostico> listaPronostico;
+    private ArrayList<Pronostico> listaPronosticos;
 
-    public Persona(String nombre) {
+    public Persona(String nombre)
+    {
         this.nombre = nombre;
+        listaPronosticos = new ArrayList<>();
     }
-
-    public void setPronostico(Pronostico pronostico)
+    public void setPronosticoPersona(ArrayList<Pronostico> pronos)
     {
-
+        this.listaPronosticos = pronos;
     }
 
-    public void setPronostico(ArrayList<Pronostico> pronosticos)
+    public void setNombre(String nombrePersona){
+        this.nombre = nombrePersona;
+    }
+    public String getNombre()
     {
-
+        return this.nombre;
     }
 
+    public void setPuntos(int punto)
+    {
+        this.puntos += punto;
+    }
+
+    public int getPuntos()
+    {
+        return puntos;
+    }
 }

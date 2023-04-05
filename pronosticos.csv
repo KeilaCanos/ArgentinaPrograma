@@ -1,10 +1,19 @@
-equipo1,gana1,empate,gana2,equipo2,ronda
-Peru,X,,,Brasil,1
-Colombia,,X,,Belgica,1
-Argentina,,,X,Alemania,1
-Suecia,,,X,Rusia,2
-Polonia,,X,, EEUU,2
-Ecuador,,,X,China,2
-Chile,,,X,Bolivia,3
-India,X,,,Portugal,3
-España,,,X,Rusia,3
+equipo1,gana1,empate,gana2,equipo2,ronda,persona
+Peru,X,,,Brasil,1,Esteban
+Peru,,X,,Brasil,1,Jaime
+Colombia,,X,,Belgica,1,Esteban
+Colombia,,X,,Belgica,1,Jaime
+Argentina,,,X,Alemania,1,Esteban
+Argentina,X,,,Alemania,1,Jaime
+Suecia,,,X,Rusia,2,Esteban
+Suecia,,X,,Rusia,2,Jaime
+Polonia,,X,, EEUU,2,Esteban
+Polonia,,X,, EEUU,2,Jaime
+Ecuador,,,X,China,2,Esteban
+Ecuador,X,,,China,2,Jaime
+Chile,,,X,Bolivia,3,Esteban
+Chile,,X,,Bolivia,3,Jaime
+India,X,,,Portugal,3,Esteban
+India,,,X,Portugal,3,Jaime
+España,,X,,Rusia,3,Esteban
+España,,,X,Rusia,3,Jaime
