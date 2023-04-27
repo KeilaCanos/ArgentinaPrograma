@@ -1,3 +1,5 @@
+package com.mycompany.argprogramaentrega2intento1;
+
 public class Equipo
 {
     private String nombre;

@@ -1,4 +1,4 @@
-
+package com.mycompany.argprogramaentrega2intento1;
 public class Partido
 {
     private Equipo eq1;
@@ -14,22 +14,7 @@ public class Partido
         this.golesEq1 = golesEq1;
         this.golesEq2 = golesEq2;
     }
-    
-    public ResultadoEnum resultadoPartido()
-    {
-        if(this.golesEq1 == this.golesEq2)
-        {
-            return ResultadoEnum.EMPATE;
-        }else if(this.golesEq1< this.golesEq2)
-        {
-            return ResultadoEnum.GANADOR_EQ2;
-        }else if(this.golesEq1 > this.golesEq2)
-        {
-            return ResultadoEnum.GANADOR_EQ1;
 
-        }
-        return null;
-    }
 
     public Equipo getEquipo1()
     {
